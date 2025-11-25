@@ -42,6 +42,9 @@ public class Movement : MonoBehaviour
             return;
 
         if (context.phase == InputActionPhase.Performed)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocityX, 0);
             rb.AddForce(new Vector2(rb.linearVelocityX, jumpForce), ForceMode2D.Impulse);
+        }
     }
 }
