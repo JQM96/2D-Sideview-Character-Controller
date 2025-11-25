@@ -35,9 +35,10 @@ public class Movement : MonoBehaviour
     {
         rb.linearVelocity = new Vector2(inputVector.x * speed, rb.linearVelocityY);
 
-        if (canJump == true && jumpButtonHeld == true)
+        if (canJump == true && jumpBufferTimer > 0)
         {
             rb.linearVelocityY = jumpForce;
+            jumpBufferTimer = 0;
         }
 
         if (jumpButtonHeld == false && rb.linearVelocityY > 0)
