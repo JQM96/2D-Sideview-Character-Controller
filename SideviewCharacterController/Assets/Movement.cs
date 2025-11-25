@@ -17,6 +17,7 @@ public class Movement : MonoBehaviour
 
     bool canJump;
     float jumpBufferTimer;
+    bool jumpButtonHeld;
 
     private void Awake()
     {
@@ -34,7 +35,17 @@ public class Movement : MonoBehaviour
     {
         rb.linearVelocity = new Vector2(inputVector.x * speed, rb.linearVelocityY);
 
-        if (canJump == false)
+        if (canJump == true && jumpButtonHeld == true)
+        {
+            rb.linearVelocityY = jumpForce;
+        }
+
+        if (jumpButtonHeld == false && rb.linearVelocityY > 0)
+        {
+            rb.linearVelocityY *= 0.5f;
+        }
+
+        /*if (canJump == false)
             return;
 
         if (jumpBufferTimer > 0)
@@ -43,7 +54,7 @@ public class Movement : MonoBehaviour
             rb.AddForce(new Vector2(rb.linearVelocityX, jumpForce), ForceMode2D.Impulse);
 
             jumpBufferTimer = 0;
-        }
+        }*/
     }
 
     public void Move(InputAction.CallbackContext context)
@@ -54,6 +65,14 @@ public class Movement : MonoBehaviour
     public void Jump(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)
+        {
             jumpBufferTimer = jumpBuffer;
+            jumpButtonHeld = true;
+        }
+
+        if (context.phase == InputActionPhase.Canceled)
+        {
+            jumpButtonHeld = false;
+        }
     }
 }
