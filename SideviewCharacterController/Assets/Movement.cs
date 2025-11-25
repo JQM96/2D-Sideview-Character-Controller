@@ -10,11 +10,13 @@ public class Movement : MonoBehaviour
     [SerializeField] float jumpForce = 5;
     [SerializeField] LayerMask whatIsGround;
     [SerializeField] Transform groundCheckOrigin;
+    [SerializeField] float jumpBuffer = 0.2f;
 
     Rigidbody2D rb;
     Vector2 inputVector;
 
     bool canJump;
+    float jumpBufferTimer;
 
     private void Awake()
     {
@@ -24,11 +26,24 @@ public class Movement : MonoBehaviour
     private void Update()
     {
         canJump = Physics2D.Raycast(groundCheckOrigin.position, Vector2.down, 0.1f, whatIsGround);
+
+        jumpBufferTimer -= Time.deltaTime;
     }
 
     private void FixedUpdate()
     {
         rb.linearVelocity = new Vector2(inputVector.x * speed, rb.linearVelocityY);
+
+        if (canJump == false)
+            return;
+
+        if (jumpBufferTimer > 0)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocityX, 0);
+            rb.AddForce(new Vector2(rb.linearVelocityX, jumpForce), ForceMode2D.Impulse);
+
+            jumpBufferTimer = 0;
+        }
     }
 
     public void Move(InputAction.CallbackContext context)
@@ -38,13 +53,7 @@ public class Movement : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
-        if (canJump == false)
-            return;
-
         if (context.phase == InputActionPhase.Performed)
-        {
-            rb.linearVelocity = new Vector2(rb.linearVelocityX, 0);
-            rb.AddForce(new Vector2(rb.linearVelocityX, jumpForce), ForceMode2D.Impulse);
-        }
+            jumpBufferTimer = jumpBuffer;
     }
 }
