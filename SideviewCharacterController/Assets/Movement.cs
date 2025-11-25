@@ -11,6 +11,7 @@ public class Movement : MonoBehaviour
     [SerializeField] LayerMask whatIsGround;
     [SerializeField] Transform groundCheckOrigin;
     [SerializeField] float jumpBuffer = 0.2f;
+    [SerializeField] float coyoteTime = 0.2f;
 
     Rigidbody2D rb;
     Vector2 inputVector;
@@ -18,6 +19,7 @@ public class Movement : MonoBehaviour
     bool canJump;
     float jumpBufferTimer;
     bool jumpButtonHeld;
+    float coyoteTimeTimer;
 
     private void Awake()
     {
@@ -29,13 +31,18 @@ public class Movement : MonoBehaviour
         canJump = Physics2D.Raycast(groundCheckOrigin.position, Vector2.down, 0.1f, whatIsGround);
 
         jumpBufferTimer -= Time.deltaTime;
+
+        if (canJump == true)
+            coyoteTimeTimer = coyoteTime;
+        else
+            coyoteTimeTimer -= Time.deltaTime;
     }
 
     private void FixedUpdate()
     {
         rb.linearVelocity = new Vector2(inputVector.x * speed, rb.linearVelocityY);
 
-        if (canJump == true && jumpBufferTimer > 0)
+        if (coyoteTimeTimer > 0 && jumpBufferTimer > 0)
         {
             rb.linearVelocityY = jumpForce;
             jumpBufferTimer = 0;
@@ -44,18 +51,9 @@ public class Movement : MonoBehaviour
         if (jumpButtonHeld == false && rb.linearVelocityY > 0)
         {
             rb.linearVelocityY *= 0.5f;
+
+            coyoteTimeTimer = 0;
         }
-
-        /*if (canJump == false)
-            return;
-
-        if (jumpBufferTimer > 0)
-        {
-            rb.linearVelocity = new Vector2(rb.linearVelocityX, 0);
-            rb.AddForce(new Vector2(rb.linearVelocityX, jumpForce), ForceMode2D.Impulse);
-
-            jumpBufferTimer = 0;
-        }*/
     }
 
     public void Move(InputAction.CallbackContext context)
