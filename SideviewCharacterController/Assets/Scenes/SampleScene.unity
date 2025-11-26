@@ -2112,6 +2112,7 @@ MonoBehaviour:
   groundCheckOrigin: {fileID: 1372146361}
   jumpBuffer: 0.2
   coyoteTime: 0.2
+  fallSpeedClamp: -10
 --- !u!114 &2080942684
 MonoBehaviour:
   m_ObjectHideFlags: 0

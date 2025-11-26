@@ -13,6 +13,9 @@ public class Movement : MonoBehaviour
     [SerializeField] float jumpBuffer = 0.2f;
     [SerializeField] float coyoteTime = 0.2f;
 
+    [Header("Fall speed clamp")]
+    [SerializeField] float fallSpeedClamp = -10f;
+
     Rigidbody2D rb;
     Vector2 inputVector;
 
@@ -36,6 +39,8 @@ public class Movement : MonoBehaviour
             coyoteTimeTimer = coyoteTime;
         else
             coyoteTimeTimer -= Time.deltaTime;
+
+        Debug.Log(rb.linearVelocityY);
     }
 
     private void FixedUpdate()
@@ -54,6 +59,9 @@ public class Movement : MonoBehaviour
 
             coyoteTimeTimer = 0;
         }
+
+        if (rb.linearVelocityY < fallSpeedClamp)
+            rb.linearVelocityY = fallSpeedClamp;
     }
 
     public void Move(InputAction.CallbackContext context)
