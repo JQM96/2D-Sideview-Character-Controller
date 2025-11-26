@@ -39,8 +39,6 @@ public class Movement : MonoBehaviour
             coyoteTimeTimer = coyoteTime;
         else
             coyoteTimeTimer -= Time.deltaTime;
-
-        Debug.Log(rb.linearVelocityY);
     }
 
     private void FixedUpdate()
